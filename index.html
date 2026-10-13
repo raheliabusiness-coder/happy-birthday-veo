@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veo's Birthday Chronicles</title>
+  <style>
+    :root {
+      --bg-dark: #09131d;
+      --aurora-green: #20e398;
+      --aurora-cyan: #17bebb;
+      --aurora-purple: #7b2cbf;
+      --gold: #f4d03f;
+      --text-light: #f0f4f8;
+      --card-bg: rgba(15, 28, 44, 0.88);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background Aurora Animation */
+    .aurora-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 20%, rgba(32, 227, 152, 0.15), transparent 60%),
+                  radial-gradient(circle at 80% 50%, rgba(23, 190, 187, 0.2), transparent 50%),
+                  radial-gradient(circle at 20% 80%, rgba(123, 44, 191, 0.25), transparent 50%);
+      filter: blur(40px);
+      animation: auroraShift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes auroraShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(3deg); }
+    }
+
+    /* Snowfall Canvas */
+    #snow-canvas, #fireworks-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #snow-canvas { z-index: 1; }
+    #fireworks-canvas { z-index: 99; }
+
+    /* Main Container */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 550px;
+      padding: 16px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 12px 0;
+      margin-bottom: 8px;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      color: var(--aurora-green);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(32, 227, 152, 0.4);
+    }
+
+    header p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Book Page Wrapper - Strict Hide/Show Logic */
+    .book-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Ensure inactive pages are COMPLETELY hidden */
+    .page {
+      display: none;
+      width: 100%;
+    }
+
+    .page.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--aurora-cyan);
+      margin-bottom: 6px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      margin: 12px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(32, 227, 152, 0.2);
+    }
+
+    .icon-container svg {
+      width: 44px;
+      height: 44px;
+      fill: var(--aurora-green);
+    }
+
+    .page-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    /* Candle Styling */
+    .cake-container {
+      position: relative;
+      margin: 20px 0;
+      cursor: pointer;
+    }
+
+    .candle {
+      width: 16px;
+      height: 60px;
+      background: linear-gradient(to bottom, #f1f2f6, #ced6e0);
+      border-radius: 8px 8px 0 0;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .flame {
+      width: 16px;
+      height: 26px;
+      background: #ff9f43;
+      border-radius: 50% 50% 20% 20%;
+      position: absolute;
+      top: -24px;
+      left: 0;
+      box-shadow: 0 0 15px #ff9f43, 0 0 30px #ff6b6b;
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    .flame.out {
+      display: none;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-1deg); }
+      100% { transform: scale(1.08) rotate(1deg); }
+    }
+
+    /* Navigation Controls */
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-bottom: 16px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: rgba(32, 227, 152, 0.2);
+      border-color: var(--aurora-green);
+    }
+
+    .btn-primary {
+      background: var(--aurora-green);
+      color: #05101a;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #1cc885;
+      box-shadow: 0 0 15px rgba(32, 227, 152, 0.5);
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      font-size: 0.85rem;
+      color: var(--aurora-cyan);
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora-bg"></div>
+  <canvas id="snow-canvas"></canvas>
+  <canvas id="fireworks-canvas"></canvas>
+
+  <div class="app-container">
+    <header>
+      <h1>Veo's Chronicles</h1>
+      <p>October 14 • Swedish Aurora Storybook</p>
+    </header>
+
+    <div class="book-card">
+      
+      <!-- PAGE 1: COVER -->
+      <div class="page active" id="page-1">
+        <div class="chapter-tag">Welcome</div>
+        <h2 class="page-title">Veo's Birthday Chronicles</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <p class="page-body">
+          A journey through time on October 14th, dedicated to a precious friend and sister living under the Swedish northern lights.
+        </p>
+        <p style="font-size: 0.85rem; color: var(--aurora-cyan);">Click "Next" to turn the page.</p>
+      </div>
+
+      <!-- PAGE 2: BATTLE OF HASTINGS -->
+      <div class="page" id="page-2">
+        <div class="chapter-tag">Event 1 • 1066</div>
+        <h2 class="page-title">The Battle of Hastings</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+        </div>
+        <p class="page-body">
+          On October 14, 1066, William the Conqueror won the Battle of Hastings, reshaping European history and English culture forever.
+        </p>
+      </div>
+
+      <!-- PAGE 3: CHUCK YEAGER -->
+      <div class="page" id="page-3">
+        <div class="chapter-tag">Event 2 • 1947</div>
+        <h2 class="page-title">Breaking the Sound Barrier</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2.5s-6 8-6 13.5c0 3.3 2.7 6 6 6s6-2.7 6-6c0-5.5-6-13.5-6-13.5zM12 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        </div>
+        <p class="page-body">
+          Chuck Yeager flew the Bell X-1 rocket plane faster than the speed of sound on October 14, 1947, opening the modern space age.
+        </p>
+      </div>
+
+      <!-- PAGE 4: MLK NOBEL PEACE PRIZE -->
+      <div class="page" id="page-4">
+        <div class="chapter-tag">Event 3 • 1964</div>
+        <h2 class="page-title">Nobel Peace Prize</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <p class="page-body">
+          Martin Luther King Jr. was announced as the recipient of the Nobel Peace Prize on October 14, 1964, for his nonviolent civil rights activism.
+        </p>
+      </div>
+
+      <!-- PAGE 5: CONCORDE -->
+      <div class="page" id="page-5">
+        <div class="chapter-tag">Event 4 • 1977</div>
+        <h2 class="page-title">Concorde Supersonic Flight</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+        </div>
+        <p class="page-body">
+          On October 14, 1977, Concorde flew its maiden trial flight to NYC, defining supersonic commercial travel across the Atlantic.
+        </p>
+      </div>
+
+      <!-- PAGE 6: VEO TRIBUTE -->
+      <div class="page" id="page-6">
+        <div class="chapter-tag">Event 5 • Present Day</div>
+        <h2 class="page-title">The Greatest Moment</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <p class="page-body">
+          Out of all history on October 14th, the most precious is celebrating <strong>Veo</strong>—a magnificent friend and sister brightening Sweden with her warmth and kindness!
+        </p>
+      </div>
+
+      <!-- PAGE 7: CANDLE FINALE -->
+      <div class="page" id="page-7">
+        <div class="chapter-tag">Grand Finale</div>
+        <h2 class="page-title">Make A Wish, Veo!</h2>
+        
+        <div class="cake-container" id="cake" onclick="blowOutCandle()">
+          <div class="candle">
+            <div class="flame" id="flame"></div>
+          </div>
+        </div>
+
+        <p class="page-body" id="wish-status">
+          Blow into your mic or tap the candle to blow it out!
+        </p>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+          <button class="btn" onclick="initMic()">Enable Mic</button>
+          <button class="btn" onclick="blowOutCandle()">Tap Blow Candle</button>
+        </div>
+
+        <button class="btn btn-primary" id="restart-btn" style="margin-top: 16px; display: none;" onclick="resetStory()">
+          Relight & Restart
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="nav-controls">
+      <button class="btn" id="prev-btn" onclick="changePage(-1)">← Prev</button>
+      <span class="page-indicator" id="page-indicator">Page 1 of 7</span>
+      <button class="btn btn-primary" id="next-btn" onclick="changePage(1)">Next →</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    const totalPages = 7;
+    let candleBlown = false;
+    let audioCtx, analyser, micStream;
+
+    function updatePages() {
+      for (let i = 1; i <= totalPages; i++) {
+        const pageEl = document.getElementById(`page-${i}`);
+        if (i === currentPage) {
+          pageEl.classList.add('active');
+        } else {
+          pageEl.classList.remove('active');
+        }
+      }
+
+      document.getElementById('page-indicator').innerText = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prev-btn').disabled = currentPage === 1;
+      document.getElementById('next-btn').disabled = currentPage === totalPages;
+    }
+
+    function changePage(delta) {
+      if (currentPage + delta >= 1 && currentPage + delta <= totalPages) {
+        currentPage += delta;
+        updatePages();
+      }
+    }
+
+    /* Candle Blowing Functions */
+    function blowOutCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+      document.getElementById('flame').classList.add('out');
+      document.getElementById('wish-status').innerHTML = "<strong style='color: var(--aurora-green);'>Happy Birthday, Veo! ✨ 🎉</strong>";
+      document.getElementById('restart-btn').style.display = 'inline-flex';
+      launchFireworks();
+      playChime();
+    }
+
+    function resetStory() {
+      candleBlown = false;
+      document.getElementById('flame').classList.remove('out');
+      document.getElementById('wish-status').innerText = "Blow into your mic or tap the candle to blow it out!";
+      document.getElementById('restart-btn').style.display = 'none';
+      currentPage = 1;
+      updatePages();
+    }
+
+    async function initMic() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function checkBlow() {
+          if (candleBlown) return;
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+          let average = sum / bufferLength;
+
+          if (average > 65) {
+            blowOutCandle();
+          } else {
+            requestAnimationFrame(checkBlow);
+          }
+        }
+        checkBlow();
+        document.getElementById('wish-status').innerText = "Mic enabled! Blow softly into your mic...";
+      } catch (err) {
+        document.getElementById('wish-status').innerText = "Mic access denied. Tap candle to blow!";
+      }
+    }
+
+    /* Audio Chime Synthesis */
+    function playChime() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [261.63, 329.63, 392.00, 523.25];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, ctx.currentTime + idx * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.15 + 1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.15);
+        osc.stop(ctx.currentTime + idx * 0.15 + 1);
+      });
+    }
+
+    /* Canvas FX: Snow & Fireworks */
+    const snowCanvas = document.getElementById('snow-canvas');
+    const snowCtx = snowCanvas.getContext('2d');
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    const fwCtx = fwCanvas.getContext('2d');
+
+    function resizeCanvas() {
+      snowCanvas.width = fwCanvas.width = window.innerWidth;
+      snowCanvas.height = fwCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Snow Flakes
+    const flakes = Array.from({ length: 45 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 3 + 1,
+      d: Math.random() + 0.5
+    }));
+
+    function drawSnow() {
+      snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+      snowCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      snowCtx.beginPath();
+      flakes.forEach(f => {
+        snowCtx.moveTo(f.x, f.y);
+        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        f.y += f.d;
+        if (f.y > snowCanvas.height) {
+          f.y = -10;
+          f.x = Math.random() * snowCanvas.width;
+        }
+      });
+      snowCtx.fill();
+      requestAnimationFrame(drawSnow);
+    }
+    drawSnow();
+
+    // Fireworks
+    let particles = [];
+    function launchFireworks() {
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: fwCanvas.width / 2,
+          y: fwCanvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12,
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+          alpha: 1
+        });
+      }
+      animateFireworks();
+    }
+
+    function animateFireworks() {
+      if (particles.length === 0) return;
+      fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+      particles.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.015;
+        fwCtx.fillStyle = p.color;
+        fwCtx.globalAlpha = Math.max(0, p.alpha);
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        fwCtx.fill();
+
+        if (p.alpha <= 0) particles.splice(index, 1);
+      });
+      if (particles.length > 0) requestAnimationFrame(animateFireworks);
+    }
+
+    // Initialize Page 1
+    updatePages();
+  </script>
+</body>
+</html>
