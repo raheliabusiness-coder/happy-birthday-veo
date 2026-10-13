@@ -1,733 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veo's Oct 14th Chronicles - A Journey Through Time</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #030712;
-            color: #f3f4f6;
-            overflow-x: hidden;
-            user-select: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veo's Birthday Chronicles</title>
+  <style>
+    :root {
+      --bg-dark: #09131d;
+      --aurora-green: #20e398;
+      --aurora-cyan: #17bebb;
+      --aurora-purple: #7b2cbf;
+      --gold: #f4d03f;
+      --text-light: #f0f4f8;
+      --card-bg: rgba(15, 28, 44, 0.88);
+    }
 
-        .font-serif-book {
-            font-family: 'Cinzel', serif;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* Dynamic Aurora Sky Background */
-        .aurora-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            background: radial-gradient(circle at 50% 20%, #022c22 0%, #0f172a 50%, #030712 100%);
-            overflow: hidden;
-        }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        .aurora-wave {
-            position: absolute;
-            filter: blur(70px);
-            opacity: 0.45;
-            mix-blend-mode: screen;
-            animation: aurora-flow 20s ease-in-out infinite alternate;
-        }
+    /* Background Aurora Animation */
+    .aurora-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 20%, rgba(32, 227, 152, 0.15), transparent 60%),
+                  radial-gradient(circle at 80% 50%, rgba(23, 190, 187, 0.2), transparent 50%),
+                  radial-gradient(circle at 20% 80%, rgba(123, 44, 191, 0.25), transparent 50%);
+      filter: blur(40px);
+      animation: auroraShift 12s ease-in-out infinite alternate;
+    }
 
-        .aurora-1 {
-            top: -15%;
-            left: -10%;
-            width: 120vw;
-            height: 70vh;
-            background: linear-gradient(90deg, #059669, #06b6d4, #6366f1);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-        }
+    @keyframes auroraShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(3deg); }
+    }
 
-        .aurora-2 {
-            top: 10%;
-            right: -20%;
-            width: 110vw;
-            height: 60vh;
-            background: linear-gradient(120deg, #8b5cf6, #10b981, #0284c7);
-            border-radius: 60% 40% 30% 70% / 50% 30% 70% 50%;
-            animation-duration: 25s;
-            animation-delay: -7s;
-        }
+    /* Snowfall Canvas */
+    #snow-canvas, #fireworks-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-        @keyframes aurora-flow {
-            0% { transform: rotate(0deg) scale(1) translateY(0); }
-            50% { transform: rotate(5deg) scale(1.12) translateY(25px); }
-            100% { transform: rotate(-4deg) scale(0.95) translateY(-20px); }
-        }
+    #snow-canvas { z-index: 1; }
+    #fireworks-canvas { z-index: 99; }
 
-        /* Canvases */
-        #snow-canvas, #fireworks-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        #snow-canvas { z-index: -1; }
-        #fireworks-canvas { z-index: 50; }
+    /* Main Container */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 550px;
+      padding: 16px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        /* 3D Book Layout */
-        .book-wrapper {
-            perspective: 2000px;
-        }
+    header {
+      text-align: center;
+      padding: 12px 0;
+      margin-bottom: 8px;
+    }
 
-        .book-page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.5s ease;
-            transform-origin: left center;
-        }
+    header h1 {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      color: var(--aurora-green);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(32, 227, 152, 0.4);
+    }
 
-        /* Glassmorphic Book Page Aesthetics */
-        .glass-page {
-            background: rgba(15, 23, 42, 0.78);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.05);
-        }
+    header p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
 
-        /* Flame Effect */
-        .flame {
-            width: 18px;
-            height: 32px;
-            background: linear-gradient(to bottom, #fef08a 0%, #f97316 60%, #ef4444 100%);
-            border-radius: 50% 50% 35% 35%;
-            box-shadow: 0 0 20px #f97316, 0 0 35px #fef08a;
-            animation: flame-wiggle 0.18s infinite alternate ease-in-out;
-            transform-origin: center bottom;
-        }
+    /* Book Page Wrapper - Strict Hide/Show Logic */
+    .book-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
 
-        @keyframes flame-wiggle {
-            0% { transform: scale(1) rotate(-2deg); opacity: 0.92; }
-            100% { transform: scale(1.1) rotate(2deg); opacity: 1; }
-        }
+    /* Ensure inactive pages are COMPLETELY hidden */
+    .page {
+      display: none;
+      width: 100%;
+    }
 
-        .flame-out {
-            display: none !important;
-        }
+    .page.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
 
-        .smoke-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: rgba(226, 232, 240, 0.6);
-            border-radius: 50%;
-            animation: smoke-float 2.2s ease-out forwards;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        @keyframes smoke-float {
-            0% { opacity: 0.8; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-50px) scale(3.5); filter: blur(5px); }
-        }
+    .chapter-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--aurora-cyan);
+      margin-bottom: 6px;
+    }
 
-        /* Custom SVG Icon Styling */
-        .icon-glow {
-            filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.4));
-        }
-    </style>
+    .page-title {
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      margin: 12px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(32, 227, 152, 0.2);
+    }
+
+    .icon-container svg {
+      width: 44px;
+      height: 44px;
+      fill: var(--aurora-green);
+    }
+
+    .page-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    /* Candle Styling */
+    .cake-container {
+      position: relative;
+      margin: 20px 0;
+      cursor: pointer;
+    }
+
+    .candle {
+      width: 16px;
+      height: 60px;
+      background: linear-gradient(to bottom, #f1f2f6, #ced6e0);
+      border-radius: 8px 8px 0 0;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .flame {
+      width: 16px;
+      height: 26px;
+      background: #ff9f43;
+      border-radius: 50% 50% 20% 20%;
+      position: absolute;
+      top: -24px;
+      left: 0;
+      box-shadow: 0 0 15px #ff9f43, 0 0 30px #ff6b6b;
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    .flame.out {
+      display: none;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-1deg); }
+      100% { transform: scale(1.08) rotate(1deg); }
+    }
+
+    /* Navigation Controls */
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-bottom: 16px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: rgba(32, 227, 152, 0.2);
+      border-color: var(--aurora-green);
+    }
+
+    .btn-primary {
+      background: var(--aurora-green);
+      color: #05101a;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #1cc885;
+      box-shadow: 0 0 15px rgba(32, 227, 152, 0.5);
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      font-size: 0.85rem;
+      color: var(--aurora-cyan);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between items-center relative px-4 py-6 sm:py-10">
+<body>
+  <div class="aurora-bg"></div>
+  <canvas id="snow-canvas"></canvas>
+  <canvas id="fireworks-canvas"></canvas>
 
-    <!-- Background Aurora Sky -->
-    <div class="aurora-bg">
-        <div class="aurora-wave aurora-1"></div>
-        <div class="aurora-wave aurora-2"></div>
-    </div>
-
-    <!-- Snow and Fireworks Canvases -->
-    <canvas id="snow-canvas"></canvas>
-    <canvas id="fireworks-canvas"></canvas>
-
-    <!-- Application Header -->
-    <header class="text-center z-10 mb-4 sm:mb-6">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-medium backdrop-blur-md mb-2 shadow-lg">
-            <i data-lucide="snowflake" class="w-4 h-4 text-cyan-300"></i>
-            <span>October 14 • Swedish Aurora Storybook</span>
-            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
-        </div>
-        <h1 class="text-2xl sm:text-4xl font-extrabold font-serif-book tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-teal-100 to-cyan-200 drop-shadow">
-            Veo's Birthday Chronicles
-        </h1>
+  <div class="app-container">
+    <header>
+      <h1>Veo's Chronicles</h1>
+      <p>October 14 • Swedish Aurora Storybook</p>
     </header>
 
-    <!-- Main Book Stage -->
-    <main class="w-full max-w-2xl h-[580px] sm:h-[620px] book-wrapper relative z-20 my-auto">
-        <div id="book" class="w-full h-full relative">
-
-            <!-- PAGE 1: COVER / INTRO -->
-            <div id="page-1" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center">
-                <div class="w-full flex justify-between items-center border-b border-slate-700/50 pb-3">
-                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Book Cover</span>
-                    <i data-lucide="book-open" class="w-5 h-5 text-emerald-300"></i>
-                </div>
-
-                <div class="my-auto space-y-6">
-                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500/20 via-teal-500/20 to-cyan-500/20 rounded-full flex items-center justify-center border border-emerald-400/40 shadow-inner icon-glow">
-                        <i data-lucide="compass" class="w-12 h-12 text-teal-300"></i>
-                    </div>
-
-                    <div class="space-y-3">
-                        <span class="text-xs font-semibold tracking-widest text-cyan-300 uppercase">Volume I • October 14</span>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold font-serif-book text-emerald-100 leading-tight">
-                            Veo's Oct 14th Chronicles:<br/>A Journey Through Time
-                        </h2>
-                        <p class="text-sm sm:text-base text-slate-300 max-w-md mx-auto font-light leading-relaxed">
-                            Welcome to your personalized birthday story, <strong class="text-emerald-300 font-semibold">Veo</strong>! Turn the pages to travel through historical moments of October 14th, leading up to a special grand celebration!
-                        </p>
-                    </div>
-
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/60 border border-slate-700 text-xs text-slate-300">
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-emerald-400 animate-pulse"></i>
-                        <span>Click 'Next' or use keyboard arrows to begin reading</span>
-                    </div>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"From history's defining moments to your special day in Sweden."</div>
-            </div>
-
-            <!-- PAGE 2: 1066 - Battle of Hastings -->
-            <div id="page-2" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-slate-700/50 pb-3">
-                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Chapter I • October 14, 1066</span>
-                    <i data-lucide="swords" class="w-5 h-5 text-amber-300"></i>
-                </div>
-
-                <div class="my-auto space-y-5">
-                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center border border-amber-400/30 shadow-inner icon-glow">
-                        <svg class="w-14 h-14 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2l3 6 6 1-4.5 4.5 1 6.5-5.5-3-5.5 3 1-6.5-4.5-4.5 6-1 3-6z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 21l14-14M19 21L5 7"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-slate-100">The Battle of Hastings</h3>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg mx-auto font-light">
-                        William the Conqueror leads Norman forces into battle near Hastings. This monumental event fundamentally transformed English culture, language, and European medieval destiny forever.
-                    </p>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"History turns upon the hinges of decisive moments."</div>
-            </div>
-
-            <!-- PAGE 3: 1947 - Breaking Sound Barrier -->
-            <div id="page-3" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-slate-700/50 pb-3">
-                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Chapter II • October 14, 1947</span>
-                    <i data-lucide="zap" class="w-5 h-5 text-cyan-300"></i>
-                </div>
-
-                <div class="my-auto space-y-5">
-                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center border border-cyan-400/30 shadow-inner icon-glow">
-                        <svg class="w-14 h-14 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.5 3.5L20.5 8.5M18 6l-9.5 9.5a3 3 0 01-1.5.8l-3 .7.7-3a3 3 0 01.8-1.5L15 3.5"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 8l3 3M3 21l4-4"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-slate-100">Supersonic Flight Achieved</h3>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg mx-auto font-light">
-                        Pilot Chuck Yeager flies the Bell X-1 rocket-engine aircraft over California at Mach 1.06, breaking the sound barrier for the very first time and launching humanity into the jet age.
-                    </p>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"Breaking boundaries and reaching new heights."</div>
-            </div>
-
-            <!-- PAGE 4: 1964 - MLK Nobel Peace Prize -->
-            <div id="page-4" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-slate-700/50 pb-3">
-                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Chapter III • October 14, 1964</span>
-                    <i data-lucide="award" class="w-5 h-5 text-emerald-300"></i>
-                </div>
-
-                <div class="my-auto space-y-5">
-                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center border border-emerald-400/30 shadow-inner icon-glow">
-                        <svg class="w-14 h-14 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15a7 7 0 100-14 7 7 0 000 14z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.21 13.89L7 23l5-3 5 3-1.21-9.11"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-slate-100">Nobel Peace Prize Awarded</h3>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg mx-auto font-light">
-                        Dr. Martin Luther King Jr. becomes the youngest recipient of the Nobel Peace Prize in Oslo, recognized for his courageous nonviolent leadership in the civil rights movement.
-                    </p>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"Peace, justice, and unwavering human dignity."</div>
-            </div>
-
-            <!-- PAGE 5: 1977 - Concorde Jet -->
-            <div id="page-5" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-slate-700/50 pb-3">
-                    <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Chapter IV • October 14, 1977</span>
-                    <i data-lucide="plane" class="w-5 h-5 text-indigo-300"></i>
-                </div>
-
-                <div class="my-auto space-y-5">
-                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center border border-indigo-400/30 shadow-inner icon-glow">
-                        <svg class="w-14 h-14 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-slate-100">The Concorde Takes Flight</h3>
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg mx-auto font-light">
-                        The supersonic Concorde completes its first commercial flight to New York, connecting continents at twice the speed of sound with elegance and engineering brilliance.
-                    </p>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"Bridging distant horizons through innovation."</div>
-            </div>
-
-            <!-- PAGE 6: THE GREATEST EVENT - VEO'S BIRTHDAY TRIBUTE -->
-            <div id="page-6" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-emerald-500/40 pb-3">
-                    <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider">Chapter V • The Greatest Moment</span>
-                    <i data-lucide="heart" class="w-5 h-5 text-pink-400"></i>
-                </div>
-
-                <div class="my-auto space-y-4">
-                    <div class="w-20 h-20 mx-auto bg-gradient-to-br from-pink-500/20 via-emerald-500/20 to-amber-500/20 rounded-full flex items-center justify-center border border-emerald-400/40 shadow-inner icon-glow">
-                        <i data-lucide="sparkles" class="w-10 h-10 text-amber-300"></i>
-                    </div>
-
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-emerald-100">Happy Birthday, Veo!</h3>
-                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-lg mx-auto font-light">
-                        Of all the landmark events on October 14th, the grandest of all is your birthday! To a precious friend and sister in Sweden: your kindness, humor, and warmth shine brighter than any northern lights.
-                    </p>
-                    <div class="p-3.5 bg-emerald-950/60 rounded-2xl border border-emerald-500/30 text-xs sm:text-sm text-emerald-200">
-                        "Turn to the final page to make a wish and blow out your birthday candle!"
-                    </div>
-                </div>
-
-                <div class="text-xs text-slate-400 italic">"Click 'Next' for your Grand Finale Celebration!"</div>
-            </div>
-
-            <!-- PAGE 7: GRAND FINALE - CANDLE & WISHES -->
-            <div id="page-7" class="book-page glass-page rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center hidden">
-                <div class="w-full flex justify-between items-center border-b border-amber-500/40 pb-2">
-                    <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Grand Finale • Make A Wish</span>
-                    <i data-lucide="cake" class="w-5 h-5 text-amber-300"></i>
-                </div>
-
-                <div class="space-y-1">
-                    <h3 class="text-2xl sm:text-3xl font-extrabold font-serif-book text-emerald-100">Make A Birthday Wish!</h3>
-                    <p class="text-xs sm:text-sm text-slate-300 max-w-md mx-auto font-light">
-                        Blow into your mic or tap the blow button below to extinguish the candle and trigger fireworks!
-                    </p>
-                </div>
-
-                <!-- Interactive Birthday Cake & Candle -->
-                <div class="relative w-48 h-44 sm:w-52 sm:h-48 flex flex-col items-center justify-end my-1">
-                    <!-- Flame -->
-                    <div id="flame-wrapper" class="relative flex flex-col items-center mb-1">
-                        <div id="candle-flame" class="flame"></div>
-                        <div id="smoke-container" class="absolute -top-4"></div>
-                    </div>
-
-                    <!-- Candle Stick -->
-                    <div class="w-4 h-12 bg-gradient-to-b from-cyan-200 via-teal-300 to-emerald-400 rounded-t-sm shadow-inner relative z-10">
-                        <div class="w-full h-full opacity-30 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:4px_4px]"></div>
-                    </div>
-
-                    <!-- Cake Tier 1 -->
-                    <div class="w-40 sm:w-44 h-10 bg-gradient-to-r from-teal-700 via-emerald-600 to-teal-800 rounded-t-2xl relative shadow-md flex items-center justify-center">
-                        <div class="absolute -top-2 w-full flex justify-around">
-                            <span class="w-3.5 h-3.5 bg-cyan-200 rounded-full inline-block shadow"></span>
-                            <span class="w-3.5 h-3.5 bg-emerald-200 rounded-full inline-block shadow"></span>
-                            <span class="w-3.5 h-3.5 bg-teal-200 rounded-full inline-block shadow"></span>
-                            <span class="w-3.5 h-3.5 bg-amber-200 rounded-full inline-block shadow"></span>
-                        </div>
-                    </div>
-
-                    <!-- Cake Tier 2 -->
-                    <div class="w-48 sm:w-52 h-12 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-b-2xl shadow-xl flex items-center justify-center border-t-2 border-emerald-400/40 relative">
-                        <span class="text-xs tracking-widest text-emerald-300 uppercase font-bold">Grattis Veo!</span>
-                    </div>
-
-                    <!-- Plate -->
-                    <div class="w-56 sm:w-60 h-3 bg-slate-300/30 rounded-full mt-1 shadow-2xl backdrop-blur-md"></div>
-                </div>
-
-                <!-- Blow Candle Interactive Controls -->
-                <div class="w-full space-y-2">
-                    <div class="flex flex-wrap justify-center gap-2.5">
-                        <button id="mic-btn" onclick="toggleMicrophone()" class="px-4 py-2 rounded-xl bg-teal-600/80 hover:bg-teal-500 text-white font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-lg border border-teal-400/30 active:scale-95">
-                            <i data-lucide="mic" class="w-4 h-4"></i>
-                            <span id="mic-btn-text">Enable Mic to Blow</span>
-                        </button>
-                        <button id="manual-blow-btn" onclick="extinguishCandle()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-md border border-slate-600/50 active:scale-95">
-                            <i data-lucide="wind" class="w-4 h-4 text-cyan-300"></i>
-                            <span>Tap to Blow Candle</span>
-                        </button>
-                    </div>
-                    <p id="mic-status" class="text-xs text-emerald-300/80 h-4">Click mic to blow out with voice, or tap the button!</p>
-                </div>
-
-                <button id="restart-btn" onclick="restartBook()" class="mt-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-950/60 active:scale-95 border border-emerald-400/40">
-                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                    <span>Relight Candle & Restart Story</span>
-                </button>
-            </div>
-
+    <div class="book-card">
+      
+      <!-- PAGE 1: COVER -->
+      <div class="page active" id="page-1">
+        <div class="chapter-tag">Welcome</div>
+        <h2 class="page-title">Veo's Birthday Chronicles</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
-    </main>
+        <p class="page-body">
+          A journey through time on October 14th, dedicated to a precious friend and sister living under the Swedish northern lights.
+        </p>
+        <p style="font-size: 0.85rem; color: var(--aurora-cyan);">Click "Next" to turn the page.</p>
+      </div>
+
+      <!-- PAGE 2: BATTLE OF HASTINGS -->
+      <div class="page" id="page-2">
+        <div class="chapter-tag">Event 1 • 1066</div>
+        <h2 class="page-title">The Battle of Hastings</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+        </div>
+        <p class="page-body">
+          On October 14, 1066, William the Conqueror won the Battle of Hastings, reshaping European history and English culture forever.
+        </p>
+      </div>
+
+      <!-- PAGE 3: CHUCK YEAGER -->
+      <div class="page" id="page-3">
+        <div class="chapter-tag">Event 2 • 1947</div>
+        <h2 class="page-title">Breaking the Sound Barrier</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2.5s-6 8-6 13.5c0 3.3 2.7 6 6 6s6-2.7 6-6c0-5.5-6-13.5-6-13.5zM12 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        </div>
+        <p class="page-body">
+          Chuck Yeager flew the Bell X-1 rocket plane faster than the speed of sound on October 14, 1947, opening the modern space age.
+        </p>
+      </div>
+
+      <!-- PAGE 4: MLK NOBEL PEACE PRIZE -->
+      <div class="page" id="page-4">
+        <div class="chapter-tag">Event 3 • 1964</div>
+        <h2 class="page-title">Nobel Peace Prize</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <p class="page-body">
+          Martin Luther King Jr. was announced as the recipient of the Nobel Peace Prize on October 14, 1964, for his nonviolent civil rights activism.
+        </p>
+      </div>
+
+      <!-- PAGE 5: CONCORDE -->
+      <div class="page" id="page-5">
+        <div class="chapter-tag">Event 4 • 1977</div>
+        <h2 class="page-title">Concorde Supersonic Flight</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+        </div>
+        <p class="page-body">
+          On October 14, 1977, Concorde flew its maiden trial flight to NYC, defining supersonic commercial travel across the Atlantic.
+        </p>
+      </div>
+
+      <!-- PAGE 6: VEO TRIBUTE -->
+      <div class="page" id="page-6">
+        <div class="chapter-tag">Event 5 • Present Day</div>
+        <h2 class="page-title">The Greatest Moment</h2>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <p class="page-body">
+          Out of all history on October 14th, the most precious is celebrating <strong>Veo</strong>—a magnificent friend and sister brightening Sweden with her warmth and kindness!
+        </p>
+      </div>
+
+      <!-- PAGE 7: CANDLE FINALE -->
+      <div class="page" id="page-7">
+        <div class="chapter-tag">Grand Finale</div>
+        <h2 class="page-title">Make A Wish, Veo!</h2>
+        
+        <div class="cake-container" id="cake" onclick="blowOutCandle()">
+          <div class="candle">
+            <div class="flame" id="flame"></div>
+          </div>
+        </div>
+
+        <p class="page-body" id="wish-status">
+          Blow into your mic or tap the candle to blow it out!
+        </p>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+          <button class="btn" onclick="initMic()">Enable Mic</button>
+          <button class="btn" onclick="blowOutCandle()">Tap Blow Candle</button>
+        </div>
+
+        <button class="btn btn-primary" id="restart-btn" style="margin-top: 16px; display: none;" onclick="resetStory()">
+          Relight & Restart
+        </button>
+      </div>
+
+    </div>
 
     <!-- Navigation Footer -->
-    <footer class="w-full max-w-2xl mt-6 z-20 flex items-center justify-between px-2">
-        <button id="prev-btn" onclick="changePage(-1)" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 disabled:opacity-30 disabled:cursor-not-allowed text-slate-200 font-medium text-xs sm:text-sm backdrop-blur-md border border-slate-700 transition flex items-center gap-1.5 shadow">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            <span>Previous</span>
-        </button>
+    <div class="nav-controls">
+      <button class="btn" id="prev-btn" onclick="changePage(-1)">← Prev</button>
+      <span class="page-indicator" id="page-indicator">Page 1 of 7</span>
+      <button class="btn btn-primary" id="next-btn" onclick="changePage(1)">Next →</button>
+    </div>
+  </div>
 
-        <div id="page-indicator" class="text-xs sm:text-sm font-semibold tracking-wider text-emerald-300 bg-slate-900/70 px-3.5 py-1.5 rounded-full border border-emerald-500/30 backdrop-blur-md">
-            Page 1 of 7
-        </div>
+  <script>
+    let currentPage = 1;
+    const totalPages = 7;
+    let candleBlown = false;
+    let audioCtx, analyser, micStream;
 
-        <button id="next-btn" onclick="changePage(1)" class="px-4 py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600/80 disabled:opacity-30 disabled:cursor-not-allowed text-white font-medium text-xs sm:text-sm backdrop-blur-md border border-emerald-500/40 transition flex items-center gap-1.5 shadow">
-            <span>Next</span>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-        </button>
-    </footer>
-
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        // Book Navigation State
-        let currentPage = 1;
-        const totalPages = 7;
-        let candleLit = true;
-
-        // Web Audio & Mic State
-        let audioCtx = null;
-        let micStream = null;
-        let analyser = null;
-        let isMicListening = false;
-        let micAnimFrame = null;
-
-        // Page Navigation Logic
-        function updateBookUI() {
-            for (let i = 1; i <= totalPages; i++) {
-                const pageEl = document.getElementById(`page-${i}`);
-                if (i === currentPage) {
-                    pageEl.classList.remove('hidden');
-                    pageEl.style.transform = 'rotateY(0deg)';
-                    pageEl.style.opacity = '1';
-                } else {
-                    pageEl.classList.add('hidden');
-                    pageEl.style.transform = i < currentPage ? 'rotateY(-90deg)' : 'rotateY(90deg)';
-                    pageEl.style.opacity = '0';
-                }
-            }
-
-            document.getElementById('page-indicator').innerText = `Page ${currentPage} of ${totalPages}`;
-            document.getElementById('prev-btn').disabled = currentPage === 1;
-            document.getElementById('next-btn').disabled = currentPage === totalPages;
+    function updatePages() {
+      for (let i = 1; i <= totalPages; i++) {
+        const pageEl = document.getElementById(`page-${i}`);
+        if (i === currentPage) {
+          pageEl.classList.add('active');
+        } else {
+          pageEl.classList.remove('active');
         }
+      }
 
-        function changePage(delta) {
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                updateBookUI();
-            }
+      document.getElementById('page-indicator').innerText = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prev-btn').disabled = currentPage === 1;
+      document.getElementById('next-btn').disabled = currentPage === totalPages;
+    }
+
+    function changePage(delta) {
+      if (currentPage + delta >= 1 && currentPage + delta <= totalPages) {
+        currentPage += delta;
+        updatePages();
+      }
+    }
+
+    /* Candle Blowing Functions */
+    function blowOutCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+      document.getElementById('flame').classList.add('out');
+      document.getElementById('wish-status').innerHTML = "<strong style='color: var(--aurora-green);'>Happy Birthday, Veo! ✨ 🎉</strong>";
+      document.getElementById('restart-btn').style.display = 'inline-flex';
+      launchFireworks();
+      playChime();
+    }
+
+    function resetStory() {
+      candleBlown = false;
+      document.getElementById('flame').classList.remove('out');
+      document.getElementById('wish-status').innerText = "Blow into your mic or tap the candle to blow it out!";
+      document.getElementById('restart-btn').style.display = 'none';
+      currentPage = 1;
+      updatePages();
+    }
+
+    async function initMic() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function checkBlow() {
+          if (candleBlown) return;
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+          let average = sum / bufferLength;
+
+          if (average > 65) {
+            blowOutCandle();
+          } else {
+            requestAnimationFrame(checkBlow);
+          }
         }
+        checkBlow();
+        document.getElementById('wish-status').innerText = "Mic enabled! Blow softly into your mic...";
+      } catch (err) {
+        document.getElementById('wish-status').innerText = "Mic access denied. Tap candle to blow!";
+      }
+    }
 
-        // Keyboard Arrow Navigation
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                changePage(1);
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                changePage(-1);
-            }
+    /* Audio Chime Synthesis */
+    function playChime() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [261.63, 329.63, 392.00, 523.25];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, ctx.currentTime + idx * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.15 + 1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.15);
+        osc.stop(ctx.currentTime + idx * 0.15 + 1);
+      });
+    }
+
+    /* Canvas FX: Snow & Fireworks */
+    const snowCanvas = document.getElementById('snow-canvas');
+    const snowCtx = snowCanvas.getContext('2d');
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    const fwCtx = fwCanvas.getContext('2d');
+
+    function resizeCanvas() {
+      snowCanvas.width = fwCanvas.width = window.innerWidth;
+      snowCanvas.height = fwCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Snow Flakes
+    const flakes = Array.from({ length: 45 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 3 + 1,
+      d: Math.random() + 0.5
+    }));
+
+    function drawSnow() {
+      snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+      snowCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      snowCtx.beginPath();
+      flakes.forEach(f => {
+        snowCtx.moveTo(f.x, f.y);
+        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        f.y += f.d;
+        if (f.y > snowCanvas.height) {
+          f.y = -10;
+          f.x = Math.random() * snowCanvas.width;
+        }
+      });
+      snowCtx.fill();
+      requestAnimationFrame(drawSnow);
+    }
+    drawSnow();
+
+    // Fireworks
+    let particles = [];
+    function launchFireworks() {
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: fwCanvas.width / 2,
+          y: fwCanvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12,
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+          alpha: 1
         });
+      }
+      animateFireworks();
+    }
 
-        // Snow Effect Engine
-        const snowCanvas = document.getElementById('snow-canvas');
-        const snowCtx = snowCanvas.getContext('2d');
-        let snowFlakes = [];
+    function animateFireworks() {
+      if (particles.length === 0) return;
+      fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+      particles.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.015;
+        fwCtx.fillStyle = p.color;
+        fwCtx.globalAlpha = Math.max(0, p.alpha);
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        fwCtx.fill();
 
-        function resizeSnowCanvas() {
-            snowCanvas.width = window.innerWidth;
-            snowCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeSnowCanvas);
-        resizeSnowCanvas();
+        if (p.alpha <= 0) particles.splice(index, 1);
+      });
+      if (particles.length > 0) requestAnimationFrame(animateFireworks);
+    }
 
-        function initSnow() {
-            snowFlakes = [];
-            const count = Math.floor(window.innerWidth / 12);
-            for (let i = 0; i < count; i++) {
-                snowFlakes.push({
-                    x: Math.random() * snowCanvas.width,
-                    y: Math.random() * snowCanvas.height,
-                    radius: Math.random() * 2.2 + 0.6,
-                    density: Math.random() * 0.8 + 0.4,
-                    opacity: Math.random() * 0.7 + 0.3
-                });
-            }
-        }
-        initSnow();
-
-        function renderSnow() {
-            snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
-            for (let i = 0; i < snowFlakes.length; i++) {
-                const flake = snowFlakes[i];
-                snowCtx.beginPath();
-                snowCtx.fillStyle = `rgba(224, 242, 254, ${flake.opacity})`;
-                snowCtx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-                snowCtx.fill();
-
-                flake.y += Math.pow(flake.density, 1.8) + 0.2;
-                flake.x += Math.sin(flake.y / 25) * 0.4;
-
-                if (flake.y > snowCanvas.height) {
-                    snowFlakes[i] = {
-                        x: Math.random() * snowCanvas.width,
-                        y: -10,
-                        radius: flake.radius,
-                        density: flake.density,
-                        opacity: flake.opacity
-                    };
-                }
-            }
-            requestAnimationFrame(renderSnow);
-        }
-        renderSnow();
-
-        // Canvas Fireworks Engine
-        const fwCanvas = document.getElementById('fireworks-canvas');
-        const fwCtx = fwCanvas.getContext('2d');
-        let fwParticles = [];
-        let fireworksActive = false;
-
-        function resizeFwCanvas() {
-            fwCanvas.width = window.innerWidth;
-            fwCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeFwCanvas);
-        resizeFwCanvas();
-
-        function launchFireworks() {
-            fireworksActive = true;
-            const colors = ['#10b981', '#06b6d4', '#6366f1', '#f59e0b', '#ec4899', '#38bdf8'];
-            let burstCount = 0;
-
-            const interval = setInterval(() => {
-                if (!fireworksActive || burstCount > 12) {
-                    clearInterval(interval);
-                    return;
-                }
-                const x = Math.random() * (fwCanvas.width * 0.8) + fwCanvas.width * 0.1;
-                const y = Math.random() * (fwCanvas.height * 0.45) + fwCanvas.height * 0.1;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-
-                for (let i = 0; i < 40; i++) {
-                    const angle = (Math.PI * 2 / 40) * i;
-                    const speed = Math.random() * 4.5 + 2;
-                    fwParticles.push({
-                        x: x, y: y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        alpha: 1,
-                        color: color,
-                        decay: Math.random() * 0.015 + 0.01
-                    });
-                }
-                burstCount++;
-            }, 280);
-
-            animateFireworks();
-        }
-
-        function animateFireworks() {
-            if (!fireworksActive && fwParticles.length === 0) return;
-            fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
-
-            for (let i = fwParticles.length - 1; i >= 0; i--) {
-                const p = fwParticles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.04;
-                p.alpha -= p.decay;
-
-                if (p.alpha <= 0) {
-                    fwParticles.splice(i, 1);
-                } else {
-                    fwCtx.beginPath();
-                    fwCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-                    fwCtx.fillStyle = p.color;
-                    fwCtx.globalAlpha = p.alpha;
-                    fwCtx.shadowBlur = 6;
-                    fwCtx.shadowColor = p.color;
-                    fwCtx.fill();
-                }
-            }
-            fwCtx.globalAlpha = 1;
-
-            if (fwParticles.length > 0 || fireworksActive) {
-                requestAnimationFrame(animateFireworks);
-            }
-        }
-
-        // Web Audio Synthesizer
-        function playFanfareAudio() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!audioCtx) audioCtx = new AudioContext();
-
-                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C Major arpeggio
-                notes.forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
-
-                    gain.gain.setValueAtTime(0.18, audioCtx.currentTime + idx * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 1.2);
-
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-
-                    osc.start(audioCtx.currentTime + idx * 0.1);
-                    osc.stop(audioCtx.currentTime + idx * 0.1 + 1.2);
-                });
-            } catch (e) {
-                console.log("Audio play blocked or unavailable", e);
-            }
-        }
-
-        // Microphone Detection
-        async function toggleMicrophone() {
-            const statusEl = document.getElementById('mic-status');
-            const micBtnText = document.getElementById('mic-btn-text');
-
-            if (isMicListening) {
-                stopMicrophone();
-                micBtnText.innerText = "Enable Mic to Blow";
-                statusEl.innerText = "Microphone stopped.";
-                return;
-            }
-
-            try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!audioCtx) audioCtx = new AudioContext();
-
-                const source = audioCtx.createMediaStreamSource(micStream);
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256;
-                source.connect(analyser);
-
-                isMicListening = true;
-                micBtnText.innerText = "Listening... Blow Now!";
-                statusEl.innerText = "Listening... Blow into your microphone!";
-
-                detectMicBlow();
-            } catch (err) {
-                console.error("Microphone error:", err);
-                statusEl.innerText = "Mic unavailable. You can tap 'Tap to Blow Candle' instead!";
-            }
-        }
-
-        function stopMicrophone() {
-            if (micStream) {
-                micStream.getTracks().forEach(track => track.stop());
-                micStream = null;
-            }
-            if (micAnimFrame) cancelAnimationFrame(micAnimFrame);
-            isMicListening = false;
-        }
-
-        function detectMicBlow() {
-            if (!isMicListening || !candleLit) return;
-
-            const dataArray = new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(dataArray);
-
-            let sum = 0;
-            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-            const avg = sum / dataArray.length;
-
-            if (avg > 45) { // Sensitivity threshold
-                extinguishCandle();
-                stopMicrophone();
-                document.getElementById('mic-btn-text').innerText = "Mic Blow Detected!";
-                return;
-            }
-
-            micAnimFrame = requestAnimationFrame(detectMicBlow);
-        }
-
-        // Extinguish Flame Event
-        function extinguishCandle() {
-            if (!candleLit) return;
-            candleLit = false;
-
-            const flame = document.getElementById('candle-flame');
-            flame.classList.add('flame-out');
-
-            // Generate Smoke
-            const smokeContainer = document.getElementById('smoke-container');
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    const smoke = document.createElement('div');
-                    smoke.className = 'smoke-particle';
-                    smokeContainer.appendChild(smoke);
-                    setTimeout(() => smoke.remove(), 2200);
-                }, i * 140);
-            }
-
-            // Play Sound & Launch Fireworks
-            playFanfareAudio();
-            launchFireworks();
-
-            document.getElementById('mic-status').innerText = "Happy Birthday Veo! May all your wishes come true!";
-        }
-
-        // Restart Experience & Relight Candle
-        function restartBook() {
-            candleLit = true;
-            fireworksActive = false;
-            fwParticles = [];
-            fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
-
-            document.getElementById('candle-flame').classList.remove('flame-out');
-            document.getElementById('mic-btn-text').innerText = "Enable Mic to Blow";
-            document.getElementById('mic-status').innerText = "Click mic to blow out with voice, or tap the button!";
-
-            currentPage = 1;
-            updateBookUI();
-        }
-
-        // Initial UI Render
-        updateBookUI();
-    </script>
+    // Initialize Page 1
+    updatePages();
+  </script>
 </body>
 </html>
